@@ -22,6 +22,7 @@ module Muster
         if csv?
           parameters.each do |key, value|
             parameters[key] = value.split(/,\s*/) if value.instance_of?(String)
+            parameters[key] = value.map{|value| value.split(/,\s*/)}.flatten if value.instance_of?(Array)
           end
         end
 

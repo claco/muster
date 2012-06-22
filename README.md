@@ -1,7 +1,7 @@
 # Muster
 
-Muster is a gem that turns query string options in varying formats into data structures suitable for
-easier consumption in things like AR scopes and queries, making API development just a little bit easier.
+Muster is a gem that turns query string options of varying formats into data structures suitable for
+easier consumption in things like AR and DataMapper scopes and queries, making API development just a little bit easier.
 
     select=id&select=name      {select => ['id', 'name']}
     select=id,name             {select => ['id', 'name']}

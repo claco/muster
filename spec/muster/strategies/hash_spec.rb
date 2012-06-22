@@ -34,7 +34,7 @@ describe Muster::Strategies::Hash do
       before { options[:csv] = true}   
 
       it 'converts comma separated value into Array' do
-        subject.parse('a=1,2').should == {'a' => ['1', '2']}
+        subject.parse('a=1,2&a=3').should == {'a' => ['1', '2', '3']}
       end
 
       it 'ignores spaces after commas' do
