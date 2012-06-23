@@ -3,6 +3,7 @@ require 'active_support/core_ext/array/wrap'
 require 'active_support/hash_with_indifferent_access'
 require 'muster/strategies/hash'
 require 'muster/strategies/filter_expression'
+require 'muster/strategies/pagination'
 require 'muster/strategies/sort_expression'
 
 module Muster
@@ -23,13 +24,21 @@ module Muster
         orders = Muster::Strategies::SortExpression.new(:only => :order).parse(query_string)
         orders[:order] = Array.wrap(orders[:order])
 
+        pagination = Muster::Strategies::Pagination.new(:only => [:pagination, :limit, :offset]).parse(query_string)
+
         wheres = Muster::Strategies::FilterExpression.new(:only => :where).parse(query_string)
 
-        return ActiveSupport::HashWithIndifferentAccess.new(
+        parameters = ActiveSupport::HashWithIndifferentAccess.new(
           :select => selects[:select],
           :order  => orders[:order],
-          :where  => (wheres[:where] || {}).symbolize_keys
+          :limit  => pagination[:limit],
+          :offset => pagination[:offset],
+          :where  => wheres[:where] || {}
         )
+
+        parameters.regular_writer('pagination', pagination[:pagination].symbolize_keys)
+
+        return parameters
       end
 
     end

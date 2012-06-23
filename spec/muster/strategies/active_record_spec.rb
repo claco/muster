@@ -44,6 +44,55 @@ describe Muster::Strategies::ActiveRecord do
       end
     end
 
+    context 'pagination' do
+      it 'returns default will paginate compatible pagination' do
+        subject.parse('')[:pagination].should == {:page => 1, :per_page => 30}
+      end
+
+      it 'returns default limit options' do
+        subject.parse('')[:limit].should eq 30
+      end
+
+      it 'returns default offset options' do
+        subject.parse('')[:offset].should eq nil
+      end
+
+      it 'accepts per_page option' do
+        results = subject.parse('per_page=10')
+        results[:pagination].should == {:page => 1, :per_page => 10}
+        results[:limit].should eq 10
+        results[:offset].should eq nil
+      end
+
+      it 'ensures per_page is positive integer' do
+        results = subject.parse('per_page=-10')
+        results[:pagination].should == {:page => 1, :per_page => 30}
+        results[:limit].should eq 30
+        results[:offset].should eq nil
+      end
+
+      it 'accepts page_size option' do
+        results = subject.parse('page_size=10')
+        results[:pagination].should == {:page => 1, :per_page => 10}
+        results[:limit].should eq 10
+        results[:offset].should eq nil
+      end
+
+      it 'accepts page option' do
+        results = subject.parse('page=2')
+        results[:pagination].should == {:page => 2, :per_page => 30}
+        results[:limit].should eq 30
+        results[:offset].should eq 30
+      end
+
+      it 'ensures page is positive integer' do
+        results = subject.parse('page=a')
+        results[:pagination].should == {:page => 1, :per_page => 30}
+        results[:limit].should eq 30
+        results[:offset].should eq nil
+      end
+    end
+
     context 'wheres' do
       it 'returns a single value as a string in a hash' do
         subject.parse('where=id:1')[:where].should == {'id' => '1'}
@@ -60,21 +109,28 @@ describe Muster::Strategies::ActiveRecord do
 
     context 'the full monty' do
       it 'returns a hash of all options' do
-        query_string = 'select=id,guid,name&where=name:foop&order=id:desc&order=name'
+        query_string = 'select=id,guid,name&where=name:foop&order=id:desc&order=name&page=3&page_size=5'
         results = subject.parse(query_string)
 
         results[:select].should == ['id', 'guid', 'name']
         results[:where].should  == {'name' => 'foop'}
         results[:order].should  == ['id desc', 'name asc']
+        results[:pagination].should == {:page => 3, :per_page => 5}
+        results[:offset].should == 10
+        results[:limit].should == 5
       end
 
       it 'supports indifferent access' do
-        query_string = 'select=id,guid,name&where=name:foop&order=id:desc&order=name'
+        query_string = 'select=id,guid,name&where=name:foop&order=id:desc&order=name&page=3&page_size=5'
         results = subject.parse(query_string)
 
         results['select'].should == ['id', 'guid', 'name']
         results['where'].should  == {'name' => 'foop'}
         results['order'].should  == ['id desc', 'name asc']
+        results['pagination'].should == {:page => 3, :per_page => 5}
+        results['offset'].should == 10
+        results['limit'].should == 5
+
       end
     end
   end

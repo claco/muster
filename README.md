@@ -13,6 +13,9 @@ easier consumption in things like AR and DataMapper scopes and queries, making A
     order=name&order=age       {order => ['name', 'age']}           ==> {order => ['name ASC', 'age ASC']}
     order=name:asc&age:desc    {order => ['name:asc', 'age:desc']}  ==> {order => ['name ASC', 'age DESC']}
 
+    page=2&per_page=5          {page => '2', per_page => '5' }      ==> {pagination => {page => 2, per_page => 5}, limit => 5, offset => 5}
+    page=a&per_page=-2         {page => 'a', per_page => '-2' }     ==> {pagination => {page => 1, per_page => 10}, limit => 10, offset => 10}
+
 ## Installation
 
 Add this line to your application's Gemfile:
