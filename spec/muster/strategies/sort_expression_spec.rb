@@ -25,6 +25,14 @@ describe Muster::Strategies::SortExpression do
         subject.parse('sort=id&sort=name').should == { 'sort' => ['id asc', 'name asc'] }
       end
 
+      it 'supports comma separated expressions with directions' do
+        subject.parse('sort=id:asc,name:desc').should == { 'sort' => ['id asc', 'name desc'] }
+      end
+
+      it 'supports comma separated expressions without directions' do
+        subject.parse('sort=id,name').should == { 'sort' => ['id asc', 'name asc'] }
+      end
+      
       it 'discards non unique values' do
         subject.parse('sort=id&sort=name&sort=id').should == { 'sort' => ['id asc', 'name asc'] }
       end
@@ -48,35 +56,35 @@ describe Muster::Strategies::SortExpression do
       end
     end
 
-    context 'with :only option' do
+    context 'with :fields option' do
       context 'as symbol' do
-        before { options[:only] = :sort }
+        before { options[:field] = :sort }
 
-        it 'only returns expressions for the key specified' do
+        it 'fields returns expressions for the key specified' do
           subject.parse('sort=id&order=name').should == { 'sort' => 'id asc' }
         end
       end
 
       context 'as Array of symbols' do
-        before { options[:only] = [:sort, :order] }
+        before { options[:fields] = [:sort, :order] }
 
-        it 'only returns expressions for the keys specified' do
+        it 'fields returns expressions for the keys specified' do
           subject.parse('sort=id&order=name&direction=place').should == { 'sort' => 'id asc', 'order' => 'name asc' }
         end
       end
 
       context 'as string' do
-        before { options[:only] = 'sort' }
+        before { options[:field] = 'sort' }
 
-        it 'only returns expressions for the key specified' do
+        it 'fields returns expressions for the key specified' do
           subject.parse('sort=id&order=name').should == { 'sort' => 'id asc' }
         end
       end
 
       context 'as Array of strings' do
-        before { options[:only] = ['sort', 'order'] }
+        before { options[:fields] = ['sort', 'order'] }
 
-        it 'only returns expressions for the keys specified' do
+        it 'fields returns expressions for the keys specified' do
           subject.parse('sort=id&order=name&direction=place').should == { 'sort' => 'id asc', 'order' => 'name asc' }
         end
       end

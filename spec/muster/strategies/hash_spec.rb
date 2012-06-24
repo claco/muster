@@ -30,47 +30,57 @@ describe Muster::Strategies::Hash do
       end
     end
 
-    context 'with :csv option' do
-      before { options[:csv] = true}   
+    context 'with :value_separator option' do
+      context 'as regex' do
+        before { options[:value_separator] = /,\s*/ }
 
-      it 'converts comma separated value into Array' do
-        subject.parse('a=1,2&a=3').should == {'a' => ['1', '2', '3']}
+        it 'converts comma separated value into Array' do
+          subject.parse('a=1,2&a=3').should == {'a' => ['1', '2', '3']}
+        end
+
+        it 'ignores spaces after commas' do
+          subject.parse('a=1,+2,%20   3').should == {'a' => ['1', '2', '3']}
+        end
       end
 
-      it 'ignores spaces after commas' do
-        subject.parse('a=1,+2,%20   3').should == {'a' => ['1', '2', '3']}
+      context 'as string' do
+        before { options[:value_separator] = '|' }
+
+        it 'converts comma separated value into Array' do
+          subject.parse('a=1|2|3').should == {'a' => ['1', '2', '3']}
+        end
       end
     end
 
-    context 'with :only option' do
+    context 'with :fields option' do
       context 'as symbol' do
-        before { options[:only] = :a }
+        before { options[:field] = :a }
 
-        it 'only returns values for the key specified' do
+        it 'fields returns values for the key specified' do
           subject.parse('a=1&b=2').should == {'a' => '1'}
         end
       end
 
       context 'as Array of symbols' do
-        before { options[:only] = [:a, :b] }
+        before { options[:fields] = [:a, :b] }
 
-        it 'only returns values for the keys specified' do
+        it 'fields returns values for the keys specified' do
           subject.parse('a=1&b=2&c=3').should == {'a' => '1', 'b' => '2'}
         end
       end
 
       context 'as string' do
-        before { options[:only] = 'a' }
+        before { options[:field] = 'a' }
 
-        it 'only returns values for the key specified' do
+        it 'fields returns values for the key specified' do
           subject.parse('a=1&b=2').should == {'a' => '1'}
         end
       end
 
       context 'as Array of strings' do
-        before { options[:only] = ['a', 'b'] }
+        before { options[:fields] = ['a', 'b'] }
 
-        it 'only returns values for the keys specified' do
+        it 'fields returns values for the keys specified' do
           subject.parse('a=1&b=2&c=3').should == {'a' => '1', 'b' => '2'}
         end
       end

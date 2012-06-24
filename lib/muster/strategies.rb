@@ -1,3 +1,4 @@
+require 'muster/strategies/rack.rb'
 require 'muster/strategies/active_record'
 require 'muster/strategies/filter_expression'
 require 'muster/strategies/hash'

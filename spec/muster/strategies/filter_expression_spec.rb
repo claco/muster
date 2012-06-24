@@ -25,8 +25,12 @@ describe Muster::Strategies::FilterExpression do
         subject.parse('where=id:1&where=id:2').should == { 'where' => {'id' => ['1', '2']} }
       end
 
-      it 'support or values using |' do
+      it 'support for multiple values using |' do
         subject.parse('where=id:1|2&where=id:3').should == { 'where' => {'id' => ['1', '2', '3']} }
+      end
+
+      it 'support for multiple expressions using ,' do
+        subject.parse('where=id:1,id:2,id:3').should == { 'where' => {'id' => ['1', '2', '3']} }
       end
 
       it 'discards non unique values' do
@@ -34,35 +38,85 @@ describe Muster::Strategies::FilterExpression do
       end
     end
 
-    context 'with :only option' do
-      context 'as symbol' do
-        before { options[:only] = :where }
+    context 'with :value_separator option' do
+      context 'as regex' do
+        before do
+          options[:expression_separator] = '|'
+          options[:value_separator] = /,\s*/
+        end
 
-        it 'only returns expressions for the key specified' do
+        it 'converts comma separated value into Array' do
+          subject.parse('where=id:1,2').should == { 'where' => {'id' => ['1', '2']} }
+        end
+
+        it 'ignores spaces after commas' do
+          subject.parse('where=id:1,+2,%20   3').should == { 'where' => {'id' => ['1', '2', '3']} }
+        end
+      end
+
+      context 'as string' do
+        before do
+          options[:expression_separator] = '|'
+          options[:value_separator] = ','
+        end
+
+        it 'converts comma separated value into Array' do
+          subject.parse('where=id:1,2,3').should == { 'where' => {'id' => ['1', '2', '3']} }
+        end
+      end
+    end
+
+    context 'with :field_separator option' do
+      context 'as regex' do
+        before { options[:field_separator] = /\s*!\s*/ }
+
+        it 'splits field from values' do
+          subject.parse('where=id!1').should == { 'where' => {'id' => '1'} }
+        end
+
+        it 'ignores spaces after field' do
+          subject.parse('where=id ! 1').should == { 'where' => {'id' => '1'} }
+        end
+      end
+
+      context 'as string' do
+        before { options[:field_separator] = '!' }
+
+        it 'converts comma separated value into Array' do
+          subject.parse('where=id!1').should == { 'where' => {'id' => '1'} }
+        end
+      end
+    end
+
+    context 'with :fields option' do
+      context 'as symbol' do
+        before { options[:field] = :where }
+
+        it 'fields returns expressions for the key specified' do
           subject.parse('where=id:1&filters=id:2').should == { 'where' => {'id' => '1'} }
         end
       end
 
       context 'as Array of symbols' do
-        before { options[:only] = [:where, :filter] }
+        before { options[:fields] = [:where, :filter] }
 
-        it 'only returns expressions for the keys specified' do
+        it 'fields returns expressions for the keys specified' do
           subject.parse('where=id:1&filter=id:2&attribute=id:3').should == { 'where' => {'id' => '1'}, 'filter' => {'id' => '2'} }
         end
       end
 
       context 'as string' do
-        before { options[:only] = 'where' }
+        before { options[:field] = 'where' }
 
-        it 'only returns expressions for the key specified' do
+        it 'fields returns expressions for the key specified' do
           subject.parse('where=id:1&filter=id:2').should == { 'where' => {'id' => '1'} }
         end
       end
 
       context 'as Array of strings' do
-        before { options[:only] = ['where', 'filter'] }
+        before { options[:fields] = ['where', 'filter'] }
 
-        it 'only returns expressions for the keys specified' do
+        it 'fields returns expressions for the keys specified' do
           subject.parse('where=id:1&filter=id:2&attribute=id:3').should == { 'where' => {'id' => '1'}, 'filter' => {'id' => '2'} }
         end
       end

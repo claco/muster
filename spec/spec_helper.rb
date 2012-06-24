@@ -1,3 +1,4 @@
+require 'rack/mock'
 require 'muster'
 
 RSpec.configure do |config|

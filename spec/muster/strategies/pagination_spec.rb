@@ -29,35 +29,43 @@ describe Muster::Strategies::Pagination do
       end
     end
 
-    context 'with :only option' do
-      context 'as symbol' do
-        before { options[:only] = :limit }
+    context 'with :default_page_size option' do
+      before { options[:default_page_size] = 5 }
 
-        it 'only returns values for the key specified' do
+      it 'uses default page size instead of 30' do
+        subject.parse('')[:limit].should eq 5
+      end
+    end
+
+    context 'with :fields option' do
+      context 'as symbol' do
+        before { options[:field] = :limit }
+
+        it 'fields returns values for the key specified' do
           subject.parse('per_page=10').should == {'limit' => 10}
         end
       end
 
       context 'as Array of symbols' do
-        before { options[:only] = [:limit, :offset] }
+        before { options[:fields] = [:limit, :offset] }
 
-        it 'only returns values for the keys specified' do
+        it 'fields returns values for the keys specified' do
           subject.parse('per_page=10&page=2').should == {'limit' => 10, 'offset' => 10}
         end
       end
 
       context 'as string' do
-        before { options[:only] = 'limit' }
+        before { options[:field] = 'limit' }
 
-        it 'only returns values for the key specified' do
+        it 'fields returns values for the key specified' do
           subject.parse('per_page=10').should == {'limit' => 10}
         end
       end
 
       context 'as Array of strings' do
-        before { options[:only] = ['limit', 'offset'] }
+        before { options[:fields] = ['limit', 'offset'] }
 
-        it 'only returns values for the keys specified' do
+        it 'fields returns values for the keys specified' do
           subject.parse('per_page=10&page=2').should == {'limit' => 10, 'offset' => 10}
         end
       end
