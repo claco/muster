@@ -4,8 +4,8 @@ require File.expand_path('../lib/muster/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["Christopher H. Laco"]
   gem.email         = ["claco@chrislaco.com"]
-  gem.description   = %q{Muster is a gem that turns query string options in varying formats into data structures suitable for use in AR scopes and queryies.}
-  gem.summary       = %q{Muster various query string options into AR query compatable options.}
+  gem.description   = %q{Muster is a gem that turns query strings of varying formats into data structures suitable for easier consumption in AR/DataMapper scopes and queries.}
+  gem.summary       = %q{Muster various query string formats into a more reusable data structure.}
   gem.homepage      = "https://github.com/claco/muster"
 
   gem.files         = `git ls-files`.split($\)
