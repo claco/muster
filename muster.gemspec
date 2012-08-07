@@ -18,7 +18,8 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'activesupport', '~> 3.0'
   gem.add_dependency 'rack',          '~> 1.4'
 
-  gem.add_development_dependency 'rspec',     '~> 2.10.0'
+  gem.add_development_dependency 'rspec',     '~> 2.11.0'
   gem.add_development_dependency 'redcarpet', '~> 2.1'
+  gem.add_development_dependency 'simplecov'
   gem.add_development_dependency 'yard',      '~> 0.8.2'
 end
