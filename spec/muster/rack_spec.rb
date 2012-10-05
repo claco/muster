@@ -36,8 +36,11 @@ describe Muster::Rack do
   end
 
   it 'supports indifferent access' do
-    strategy = Muster::Strategies::Hash.new(:field => :name)
-    Muster::Rack.new(application, strategy).call(environment)
+    Muster::Rack.new(application, Muster::Strategies::Hash, :field => :name).call(environment)
+    environment[Muster::Rack::QUERY].should == {'name' => 'value'}
+
+    Muster::Rack.new(application, Muster::Strategies::Hash, :field => :order).call(environment)
+    environment[Muster::Rack::QUERY].should == {'name' => 'value', 'order' => 'name'}
 
     environment[Muster::Rack::QUERY]['name'].should eq 'value'
     environment[Muster::Rack::QUERY][:name].should eq 'value'
