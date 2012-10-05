@@ -72,7 +72,7 @@ Combines many of the strategies above to output ActiveRecord Query interface com
 
 If you are using WillPaginate, you can also pass in :pagination:
 
-    Person.paginate( query[:paginate] )
+    Person.paginate( query[:pagination] )
 
 ## Installation
 
