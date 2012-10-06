@@ -10,6 +10,7 @@ describe Muster::Rack do
     middleware.call(environment)
 
     environment[Muster::Rack::QUERY].should == {'name' => 'value', 'order' => 'name'}
+    environment[Muster::Rack::QUERY].should be_an_instance_of(Muster::Results)
   end
 
   it 'accepts options for middlewhere' do
@@ -18,6 +19,7 @@ describe Muster::Rack do
     middleware.call(environment)
 
     environment[Muster::Rack::QUERY].should == {'name' => 'value'}
+    environment[Muster::Rack::QUERY].should be_an_instance_of(Muster::Results)
   end
 
   it 'accepts a strategy instance' do
@@ -25,22 +27,27 @@ describe Muster::Rack do
     Muster::Rack.new(application, strategy).call(environment)
 
     environment[Muster::Rack::QUERY].should == {'name' => 'value'}
+    environment[Muster::Rack::QUERY].should be_an_instance_of(Muster::Results)
   end
 
   it 'merges multiple strategies into one result' do
     Muster::Rack.new(application, Muster::Strategies::Hash, :field => :name).call(environment)
     environment[Muster::Rack::QUERY].should == {'name' => 'value'}
+    environment[Muster::Rack::QUERY].should be_an_instance_of(Muster::Results)
 
     Muster::Rack.new(application, Muster::Strategies::Hash, :field => :order).call(environment)
     environment[Muster::Rack::QUERY].should == {'name' => 'value', 'order' => 'name'}
+    environment[Muster::Rack::QUERY].should be_an_instance_of(Muster::Results)
   end
 
   it 'supports indifferent access' do
     Muster::Rack.new(application, Muster::Strategies::Hash, :field => :name).call(environment)
     environment[Muster::Rack::QUERY].should == {'name' => 'value'}
+    environment[Muster::Rack::QUERY].should be_an_instance_of(Muster::Results)
 
     Muster::Rack.new(application, Muster::Strategies::Hash, :field => :order).call(environment)
     environment[Muster::Rack::QUERY].should == {'name' => 'value', 'order' => 'name'}
+    environment[Muster::Rack::QUERY].should be_an_instance_of(Muster::Results)
 
     environment[Muster::Rack::QUERY]['name'].should eq 'value'
     environment[Muster::Rack::QUERY][:name].should eq 'value'

@@ -62,7 +62,7 @@ module Muster
       request  = ::Rack::Request.new(env)
       parser   = self.strategy.kind_of?(Class) ? self.strategy.new(options) : self.strategy
 
-      env[QUERY] ||= ActiveSupport::HashWithIndifferentAccess.new
+      env[QUERY] ||= Muster::Results.new({})
       env[QUERY].merge! parser.parse(request.query_string)
       env[QUERY_STRING] = request.query_string
 

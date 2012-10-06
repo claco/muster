@@ -1,3 +1,7 @@
+= 0.0.4
+
+* Rack middleware now returns Muster::Results
+
 = 0.0.3
 
 * Added Muster::Results to help filter strategy results values
