@@ -8,7 +8,7 @@ module Muster
   # @example
   #
   #   app = Rack::Builder.new do
-  #     use Rack::Muster, Muster::Strategies::Hash, :fields => [:name, :choices]
+  #     use Muster::Rack, Muster::Strategies::Hash, :fields => [:name, :choices]
   #   end
   #   
   #   # GET /?name=bob&choices=1&choices=2
