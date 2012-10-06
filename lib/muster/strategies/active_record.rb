@@ -1,6 +1,7 @@
 require 'active_support/core_ext/array/wrap'
 require 'active_support/hash_with_indifferent_access'
 require 'muster/strategies/hash'
+require 'muster/results'
 require 'muster/strategies/filter_expression'
 require 'muster/strategies/pagination'
 require 'muster/strategies/sort_expression'
@@ -24,7 +25,7 @@ module Muster
       #
       # @param query_string [String] the query string to parse
       #
-      # @return [Hash]
+      # @return [Muster::Results]
       #
       # @example
       #   
@@ -34,7 +35,7 @@ module Muster
       def parse( query_string )
         pagination = self.parse_pagination( query_string )
 
-        parameters = ActiveSupport::HashWithIndifferentAccess.new(
+        parameters = Muster::Results.new(
           :select => self.parse_select(query_string),
           :order  => self.parse_order(query_string),
           :limit  => pagination[:limit],

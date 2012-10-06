@@ -9,6 +9,7 @@ describe Muster::Strategies::Hash do
     context 'by default' do
       it 'returns empty hash for empty query string' do
         subject.parse('').should == {}
+        subject.parse('').should be_an_instance_of(Muster::Results)
       end
 
       it 'returns hash of all key/value pairs' do

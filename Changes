@@ -1,3 +1,7 @@
+= 0.0.3
+
+* Added Muster::Results to help filter strategy results values
+
 = 0.0.2
 
 * rack env['muster.query'] now supports indifferent access

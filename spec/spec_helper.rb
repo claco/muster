@@ -1,5 +1,7 @@
-require 'simplecov'
-SimpleCov.start
+if ENV['COVERAGE']
+  require 'simplecov'
+  SimpleCov.start
+end
 
 require 'rack/mock'
 require 'muster'

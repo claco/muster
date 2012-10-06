@@ -45,7 +45,7 @@ module Muster
       #
       # @param query_string [String] the query string to parse
       #
-      # @return [Hash]
+      # @return [Muster::Results]
       #
       # @example
       #   

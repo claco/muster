@@ -5,6 +5,11 @@ describe Muster::Strategies::Pagination do
   subject { Muster::Strategies::Pagination.new(options) }
 
   describe '#parse' do
+    it 'returns a Muster::Results instance' do
+      subject.parse('').should == {"pagination"=>{"page"=>1, "per_page"=>30}, "limit"=>30, "offset"=>nil}
+      subject.parse('').should be_an_instance_of(Muster::Results)
+    end
+
     context 'by default' do
       it 'returns default hash for empty query string' do
         subject.parse('').should == {'pagination' => {'page' => 1, 'per_page' => 30}, 'offset' => nil, 'limit' => 30}

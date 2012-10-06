@@ -1,4 +1,5 @@
 require 'active_support/core_ext/hash/slice'
+require 'muster/results'
 require 'muster/strategies/hash'
 
 module Muster
@@ -43,7 +44,7 @@ module Muster
       #
       # @param query_string [String] the query string to parse
       #
-      # @return [Hash]
+      # @return [Muster::Results]
       #
       # @example
       #   
@@ -61,10 +62,10 @@ module Muster
         parameters = parameters.merge(:pagination => {:page => page, :per_page => page_size}, :limit => page_size, :offset => offset)
         
         if self.fields.present?
-          parameters = parameters.slice(*self.fields).with_indifferent_access
+          parameters = parameters.slice(*self.fields)
         end
 
-        parameters
+        return Muster::Results.new(parameters)
       end
 
       protected

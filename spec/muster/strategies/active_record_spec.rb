@@ -5,6 +5,11 @@ describe Muster::Strategies::ActiveRecord do
   subject { Muster::Strategies::ActiveRecord.new(options) }
 
   describe '#parse' do
+    it 'returns a Muster::Results instance' do
+      subject.parse('').should == {"select"=>[], "order"=>[], "limit"=>30, "offset"=>nil, "where"=>{}, "pagination"=>{:page=>1, :per_page=>30}}
+      subject.parse('').should be_an_instance_of(Muster::Results)
+    end
+
     context 'selects' do
       it 'returns single value as Array' do
         subject.parse('select=id')[:select].should == ['id']

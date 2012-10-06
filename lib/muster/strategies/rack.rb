@@ -2,6 +2,7 @@ require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/hash/indifferent_access'
 require 'active_support/core_ext/array/wrap'
 require 'rack/utils'
+require 'muster/results'
 
 module Muster
   module Strategies
@@ -43,13 +44,13 @@ module Muster
       #
       # @param query_string [String] the query string to parse
       #
-      # @return [Hash]
+      # @return [Muster::Results]
       #
       # @example
       #   
       #   results = strategy.parse('name=value&choices=1&choices=1')  #=>  { 'name' => 'value', 'choices' => ['1', '2'] }
       def parse( query_string )
-        self.fields_to_parse(query_string)
+        Muster::Results.new( self.fields_to_parse(query_string) )
       end
 
       protected

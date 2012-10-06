@@ -1,4 +1,5 @@
 require 'active_support/core_ext/array/wrap'
+require 'muster/results'
 require 'muster/strategies/hash'
 
 module Muster
@@ -49,18 +50,20 @@ module Muster
       #
       # @param query_string [String] the query string to parse
       #
-      # @return [Hash]
+      # @return [Muster::Results]
       #
       # @example
       #   
       #   results = strategy.parse('where=id:1&name:Bob')  #=>  { 'where' => {'id' => '1', 'name' => 'Bob'} }
       def parse( query_string )
-        parameters  = self.fields_to_parse(query_string)
+        parameters = Muster::Results.new( self.fields_to_parse(query_string) )
 
         parameters.each do |key, value|
           parameters[key] = self.separate_expressions(value)
           parameters[key] = self.separate_fields(parameters[key])
         end
+
+        return parameters
       end
 
       protected
