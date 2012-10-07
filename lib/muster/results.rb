@@ -75,8 +75,8 @@ module Muster
     #
     # @example
     #
-    #   results.add_filter(:select, :only => [:id, :name]
-    #   results.add_filter(:select, :except => [:id]
+    #   results.add_filter(:select, :only => [:id, :name])
+    #   results.add_filter(:select, :except => [:id])
     #   results.add_filter(:page, 1)
     def add_filter( key, *options )
       self.filters[key] = options
@@ -90,7 +90,7 @@ module Muster
     #
     # @example
     #
-    #   results.add_filter(:select, :only => [:id, :name]
+    #   results.add_filter(:select, :only => [:id, :name])
     #   results.add_dilter(:page, 1)
     #   results.filtered   #=> { 'select' => [:id, :name], 'page' => 1 }
     def filtered
@@ -127,13 +127,13 @@ module Muster
     #
     # @example
     #
-    #   data = { :select => [:id, :name, :created_at]
+    #   data = { :select => [:id, :name, :created_at] }
     #   results = Muster::Results.new(data)
-    #   results.filter(:select)                           #=> [:id, :name, :created_at]
-    #   results.filter(:select, :only => :name)           #=> :name
-    #   results.filter(:select, :only => [:other, :name]  #=> [:name]
-    #   results.filter(:other, :default)                  #=> :default
-    #   results.filter(:other)                            #=> KeyError
+    #   results.filter(:select)                            #=> [:id, :name, :created_at]
+    #   results.filter(:select, :only => :name)            #=> :name
+    #   results.filter(:select, :only => [:other, :name])  #=> [:name]
+    #   results.filter(:other, :default)                   #=> :default
+    #   results.filter(:other)                             #=> KeyError
     def filter( key, *options )
       if options.present? && options.first.instance_of?(Hash)
         options = options.first.with_indifferent_access
