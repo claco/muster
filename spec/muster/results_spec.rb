@@ -92,12 +92,14 @@ describe Muster::Results do
         results.name.should eq [1, 2, 3]
       end
 
-      it 'returns an OpenStruct for a hash' do
+      it 'returns a Hash with method missing dot notation' do
         data[:pagination] = {:page => 1, :per_page => 10}
 
-        results.pagination.should be_an_instance_of(OpenStruct)
+        results.pagination.should be_an_kind_of(Hash)
         results.pagination.page.should eq 1
         results.pagination.per_page.should eq 10
+        results.pagination[:page].should eq 1
+        results.pagination[:per_page].should eq 10
       end
     end
 

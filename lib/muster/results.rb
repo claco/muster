@@ -160,7 +160,15 @@ module Muster
         value = self[meth]
 
         if value.kind_of?(Hash)
-          value = OpenStruct.new(value)
+          value.instance_eval do
+            def method_missing(meth, *args, &block)
+              if self.has_key?(meth)
+                return self.fetch(meth)
+              end
+
+              super
+            end
+          end
         end
 
         return value
