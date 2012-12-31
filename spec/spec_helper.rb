@@ -3,6 +3,7 @@ if ENV['COVERAGE']
   SimpleCov.start
 end
 
+require 'pry'
 require 'rack/mock'
 require 'muster'
 

@@ -12,6 +12,7 @@ easier consumption in things like AR/DataMapper scopes and queries, making API d
     query = env['muster.query']
 
     @people = Person.select( query[:select] ).order( query[:order] )
+    @people = Person.select( query.select ).order( query.order )
 
 ## Strategies
 

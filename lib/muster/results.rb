@@ -7,6 +7,7 @@ module Muster
   # Query parsed results helper class
   #
   # As with most Muster classes, all hashes returned and options specified support with indifferent access.
+  # You can also access results using the dot notation for the key name.
   #
   # @param data [Hash] the hash of query string results after parsing to load
   #
@@ -17,6 +18,8 @@ module Muster
   #
   #   # Filter values one at a time
   #   results.data                                     #=> { 'select' => [:id, :name, :created_at] }
+  #   results[:select]                                 #=> [:id, :name, :created_at]
+  #   results.select                                   #=> [:id, :name, :created_at]
   #   results.filter(:select, :only => [:id, :name])   #=> [:id, :name]
   #   results.filter(:select, :except => :created_at)  #=> [:id, :name]
   #   results.filter(:page, 1)                         #=> 1
@@ -26,6 +29,8 @@ module Muster
   #   results.add_filter(:select, :only => [:id, :name])
   #   results.add_filter(:page, 1)
   #   results.filtered                                 #=> { 'select' => [:id, :name], 'page' => 1 }
+  #   results.filtered[:select]                        #=> [:id, :name]
+  #   results.filtered.select                          #=> [:id, :name]
   class Results < ActiveSupport::HashWithIndifferentAccess
 
     # @attribute [r] data
@@ -149,6 +154,20 @@ module Muster
     end
 
     private
+
+    def method_missing(meth, *args, &block)
+      if self.has_key?(meth)
+        value = self[meth]
+
+        if value.kind_of?(Hash)
+          value = OpenStruct.new(value)
+        end
+
+        return value
+      end
+
+      super
+    end
 
     def filter_excluded_values( key, excluded )
       value = self[key]

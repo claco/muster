@@ -84,4 +84,37 @@ describe Muster::Results do
       end
     end
   end
+
+  describe '#method_missing' do
+    context 'with matching key' do
+      it 'returns the value of the key index' do
+        results.name.should eq results[:name]
+        results.name.should eq [1, 2, 3]
+      end
+
+      it 'returns an OpenStruct for a hash' do
+        data[:pagination] = {:page => 1, :per_page => 10}
+
+        results.pagination.should be_an_instance_of(OpenStruct)
+        results.pagination.page.should eq 1
+        results.pagination.per_page.should eq 10
+      end
+    end
+
+    context 'without matching key' do
+      it 'returns NoMethodError' do
+        expect{ results.foop }.to raise_error(NoMethodError)
+      end
+    end
+
+    context 'with filtered results' do
+      it 'returns Results with method_missing support' do
+        data[:name] = [1, 2, 3]
+
+        results.add_filter(:name, :only => [1])
+        results.filtered.name.should eq [1]
+        results.filtered[:name].should eq [1]
+      end
+    end
+  end
 end
