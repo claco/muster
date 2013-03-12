@@ -6,7 +6,7 @@ describe Muster::Strategies::ActiveRecord do
 
   describe '#parse' do
     it 'returns a Muster::Results instance' do
-      subject.parse('').should == {"select"=>[], "order"=>[], "limit"=>30, "offset"=>nil, "where"=>{}, "pagination"=>{:page=>1, :per_page=>30}}
+      subject.parse('').should == {"select"=>[], "order"=>[], "limit"=>30, "offset"=>nil, "where"=>{}, "joins"=>{}, "pagination"=>{:page=>1, :per_page=>30}}
       subject.parse('').should be_an_instance_of(Muster::Results)
     end
 
@@ -46,6 +46,24 @@ describe Muster::Strategies::ActiveRecord do
         it 'supports desc' do
           subject.parse('order=id:descending')[:order].should == ['id desc']
         end
+      end
+    end
+
+    context 'joins' do
+      it 'returns single value in Array' do
+        subject.parse('joins=author')[:joins].should eq ['author']
+      end
+      
+      it 'returns multiple values in Array' do
+        subject.parse('joins=author,voter')[:joins].should eq ['author', 'voter']
+      end
+
+      it 'returns a nested hash of separated values' do
+        subject.parse('joins=author.country.name')[:joins].should eq [{'author' => { 'country' => 'name'}}]
+      end
+      
+      it 'returns an array of nested hashes' do
+        subject.parse('joins=author.country.name,activity.rule')[:joins].should eq [{'author' => { 'country' => 'name'}}, {'activity' => 'rule'}]
       end
     end
 
