@@ -42,7 +42,8 @@ module Muster
           :limit    => pagination[:limit],
           :offset   => pagination[:offset],
           :where    => self.parse_where(query_string),
-          :joins    => self.parse_joins(query_string)
+          :joins    => self.parse_joins(query_string),
+          :includes => self.parse_includes(query_string)
         )
 
         parameters.regular_writer('pagination', pagination[:pagination].symbolize_keys)
@@ -130,6 +131,22 @@ module Muster
         results  = strategy.parse(query_string)
 
         return results[:joins] || {}
+      end
+      
+      # Returns includes clauses for AR queries
+      #
+      # @param query_string [String] the original query string to parse join statements from
+      #
+      # @return [Hash]
+      #
+      # @example
+      #
+      #   value = self.parse_joins('includes=authors')  #=> {'includes' => 'authors'}
+      def parse_includes( query_string )
+        strategy = Muster::Strategies::JoinsExpression.new(:field => :includes)
+        results  = strategy.parse(query_string)
+
+        return results[:includes] || {}
       end
 
     end
