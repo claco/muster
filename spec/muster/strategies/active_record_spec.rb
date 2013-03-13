@@ -6,7 +6,7 @@ describe Muster::Strategies::ActiveRecord do
 
   describe '#parse' do
     it 'returns a Muster::Results instance' do
-      subject.parse('').should == {"select"=>[], "order"=>[], "limit"=>30, "offset"=>nil, "where"=>{}, "joins"=>{}, "pagination"=>{:page=>1, :per_page=>30}}
+      subject.parse('').should == {"select"=>[], "order"=>[], "limit"=>30, "offset"=>nil, "where"=>{}, "joins"=>{}, "includes"=>{}, "pagination"=>{:page=>1, :per_page=>30}}
       subject.parse('').should be_an_instance_of(Muster::Results)
     end
 

@@ -42,7 +42,8 @@ module Muster
           :limit    => pagination[:limit],
           :offset   => pagination[:offset],
           :where    => self.parse_where(query_string),
-          :joins    => self.parse_joins(query_string)
+          :joins    => self.parse_joins(query_string),
+          :includes => self.parse_joins(query_string)
         )
 
         parameters.regular_writer('pagination', pagination[:pagination].symbolize_keys)
