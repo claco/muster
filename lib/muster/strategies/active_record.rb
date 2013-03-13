@@ -5,6 +5,7 @@ require 'muster/results'
 require 'muster/strategies/filter_expression'
 require 'muster/strategies/pagination'
 require 'muster/strategies/sort_expression'
+require 'muster/strategies/joins_expression'
 
 module Muster
   module Strategies
@@ -36,11 +37,12 @@ module Muster
         pagination = self.parse_pagination( query_string )
 
         parameters = Muster::Results.new(
-          :select => self.parse_select(query_string),
-          :order  => self.parse_order(query_string),
-          :limit  => pagination[:limit],
-          :offset => pagination[:offset],
-          :where  => self.parse_where(query_string)
+          :select   => self.parse_select(query_string),
+          :order    => self.parse_order(query_string),
+          :limit    => pagination[:limit],
+          :offset   => pagination[:offset],
+          :where    => self.parse_where(query_string),
+          :joins    => self.parse_joins(query_string)
         )
 
         parameters.regular_writer('pagination', pagination[:pagination].symbolize_keys)
@@ -112,6 +114,22 @@ module Muster
         results  = strategy.parse(query_string)
 
         return results[:where] || {}
+      end
+
+      # Returns joins clauses for AR queries
+      #
+      # @param query_string [String] the original query string to parse join statements from
+      #
+      # @return [Hash]
+      #
+      # @example
+      #
+      #   value = self.parse_joins('joins=authors')  #=> {'joins' => 'authors'}
+      def parse_joins( query_string )
+        strategy = Muster::Strategies::JoinsExpression.new(:field => :joins)
+        results  = strategy.parse(query_string)
+
+        return results[:joins] || {}
       end
 
     end
