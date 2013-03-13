@@ -50,7 +50,7 @@ module Muster
       #
       # @example
       #   
-      #   results = strategy.parse('join=author.name,activity')  #=>  { 'join' => [{'author' => 'name'}, 'activity'] }
+      #   results = strategy.parse('joins=author.name,activity')  #=>  { 'joins' => [{'author' => 'name'}, 'activity'] }
       def parse( query_string )
         parameters = Muster::Results.new( self.fields_to_parse(query_string) )
 

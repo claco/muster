@@ -52,6 +52,12 @@ Returns options with support for dirctional indicators for use in sorting.
     ?order=name&order=age     #=>  { 'order' => ['name asc', 'age asc'] }
     ?order=name:asc&age:desc  #=>  { 'order' => ['name asc', 'age desc'] }
 
+### JoinsExpression
+
+Returns an ActiveRecord style array of 'joins' options.
+
+    ?joins=author.name,activity  #=>  { 'joins' => [{'author' => 'name'}, 'activity'] }
+
 ### Pagination
 
 Returns options to support pagination with logic for default page size, not-a-number checks and offset calculations.
@@ -64,12 +70,25 @@ Returns options to support pagination with logic for default page size, not-a-nu
 
 Combines many of the strategies above to output ActiveRecord Query interface compatible options.
 
-    ?select=id,name&where=status:new&order=name:desc&page=3&page_size=10
+    ?select=id,name&where=status:new&order=name:desc&joins=author.name,activity&page=3&page_size=10
     
-    { 'select' => ['id', 'name'], 'where' => {'status' => 'new'}, 'order' => 'name desc', 'limit' =>  10, 'offset' => 20, 'pagination' => {:page => 3, :per_page => 10} }
+    {
+      'select' => ['id', 'name'],
+      'where' => {'status' => 'new'},
+      'order' => 'name desc',
+      'limit' =>  10,
+      'offset' => 20,
+      'pagination' => {:page => 3, :per_page => 10},
+      'joins' => [{'author' => 'name'}, 'activity']
+    }
 
     query = env['muster.query']
-    Person.select( query[:select] ).where( query[:where] ).order( query[:order] ).offset( query[:offset] ).limit( query[:limit] )
+    Person.select( query[:select] )
+      .where( query[:where] )
+      .order( query[:order] )
+      .offset( query[:offset] )
+      .limit( query[:limit] )
+      .joins( query[:joins] )
 
 If you are using WillPaginate, you can also pass in :pagination:
 
@@ -127,7 +146,7 @@ You can combine multiple strategies, and their results will be merged
 
 1. Fork it from https://github.com/claco/muster
 2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Added some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
-
+3. Added an entry in Changes/Authors
+4. Commit your changes (`git commit -am 'Added some feature'`)
+5. Push to the branch (`git push origin my-new-feature`)
+6. Create new Pull Request

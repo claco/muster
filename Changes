@@ -1,3 +1,15 @@
+= 0.0.7
+
+* Added JoinsExpressions to ActiveRecord Strategy (neektza)
+
+= 0.0.6
+
+* Moved from OpenString to method_missing for dot notation on Results
+
+= 0.0.5
+
+* Added OpenStruct for dot notation on Results
+
 = 0.0.4
 
 * Rack middleware now returns Muster::Results
