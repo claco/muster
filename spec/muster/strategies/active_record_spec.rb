@@ -67,6 +67,24 @@ describe Muster::Strategies::ActiveRecord do
       end
     end
 
+    context 'includes' do
+      it 'returns single value in Array' do
+        subject.parse('includes=author')[:includes].should eq ['author']
+      end
+      
+      it 'returns multiple values in Array' do
+        subject.parse('includes=author,voter')[:includes].should eq ['author', 'voter']
+      end
+
+      it 'returns a nested hash of separated values' do
+        subject.parse('includes=author.country.name')[:includes].should eq [{'author' => { 'country' => 'name'}}]
+      end
+      
+      it 'returns an array of nested hashes' do
+        subject.parse('includes=author.country.name,activity.rule')[:includes].should eq [{'author' => { 'country' => 'name'}}, {'activity' => 'rule'}]
+      end
+    end
+
     context 'pagination' do
       it 'returns default will paginate compatible pagination' do
         subject.parse('')[:pagination].should == {:page => 1, :per_page => 30}
@@ -132,24 +150,28 @@ describe Muster::Strategies::ActiveRecord do
 
     context 'the full monty' do
       it 'returns a hash of all options' do
-        query_string = 'select=id,guid,name&where=name:foop&order=id:desc&order=name&page=3&page_size=5'
+        query_string = 'select=id,guid,name&where=name:foop&order=id:desc&order=name&page=3&page_size=5&includes=author.country,comments&joins=activity'
         results = subject.parse(query_string)
 
         results[:select].should == ['id', 'guid', 'name']
         results[:where].should  == {'name' => 'foop'}
         results[:order].should  == ['id desc', 'name asc']
+        results[:includes].should == [{'author' => 'country'}, 'comments']
+        results[:joins].should == ['activity']
         results[:pagination].should == {:page => 3, :per_page => 5}
         results[:offset].should == 10
         results[:limit].should == 5
       end
 
       it 'supports indifferent access' do
-        query_string = 'select=id,guid,name&where=name:foop&order=id:desc&order=name&page=3&page_size=5'
+        query_string = 'select=id,guid,name&where=name:foop&order=id:desc&order=name&page=3&page_size=5&includes=author.country,comments&joins=activity'
         results = subject.parse(query_string)
 
         results['select'].should == ['id', 'guid', 'name']
         results['where'].should  == {'name' => 'foop'}
         results['order'].should  == ['id desc', 'name asc']
+        results['includes'].should == [{'author' => 'country'}, 'comments']
+        results['joins'].should == ['activity']
         results['pagination'].should == {:page => 3, :per_page => 5}
         results['offset'].should == 10
         results['limit'].should == 5
