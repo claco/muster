@@ -1,6 +1,10 @@
+= 0.0.8
+
+* Added JoinsExpressions to ActiveRecord Strategy (includes) (neektza)
+
 = 0.0.7
 
-* Added JoinsExpressions to ActiveRecord Strategy (neektza)
+* Added JoinsExpressions to ActiveRecord Strategy (joins) (neektza)
 
 = 0.0.6
 
