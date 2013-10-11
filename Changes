@@ -1,3 +1,8 @@
+= 0.0.9
+
+* Update .gitignore for .ruby-version/gemset files
+* Relax active_support requirement in gemspec
+
 = 0.0.8
 
 * Added JoinsExpressions to ActiveRecord Strategy (includes) (neektza)
