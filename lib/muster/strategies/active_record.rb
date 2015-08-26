@@ -29,7 +29,7 @@ module Muster
       # @return [Muster::Results]
       #
       # @example
-      #   
+      #
       #   results  = strategy.parse('select=id,name&where=status:new&order=name:desc')
       #
       #   # { 'select' => ['id', 'name'], :where => {'status' => 'new}, :order => 'name desc' }
@@ -97,7 +97,7 @@ module Muster
       def parse_pagination( query_string )
         strategy = Muster::Strategies::Pagination.new(:fields => [:pagination, :limit, :offset])
         results  = strategy.parse(query_string)
-        
+
         return results
       end
 
@@ -113,6 +113,12 @@ module Muster
       def parse_where( query_string )
         strategy = Muster::Strategies::FilterExpression.new(:field => :where)
         results  = strategy.parse(query_string)
+
+        if results[:where] && results[:where].values.include?('null')
+          results[:where].each do |key, value|
+            results[:where][key] = nil if value == 'null'
+          end
+        end
 
         return results[:where] || {}
       end
@@ -132,7 +138,7 @@ module Muster
 
         return results[:joins] || {}
       end
-      
+
       # Returns includes clauses for AR queries
       #
       # @param query_string [String] the original query string to parse join statements from

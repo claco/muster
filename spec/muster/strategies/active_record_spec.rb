@@ -53,7 +53,7 @@ describe Muster::Strategies::ActiveRecord do
       it 'returns single value in Array' do
         subject.parse('joins=author')[:joins].should eq ['author']
       end
-      
+
       it 'returns multiple values in Array' do
         subject.parse('joins=author,voter')[:joins].should eq ['author', 'voter']
       end
@@ -61,7 +61,7 @@ describe Muster::Strategies::ActiveRecord do
       it 'returns a nested hash of separated values' do
         subject.parse('joins=author.country.name')[:joins].should eq [{'author' => { 'country' => 'name'}}]
       end
-      
+
       it 'returns an array of nested hashes' do
         subject.parse('joins=author.country.name,activity.rule')[:joins].should eq [{'author' => { 'country' => 'name'}}, {'activity' => 'rule'}]
       end
@@ -71,7 +71,7 @@ describe Muster::Strategies::ActiveRecord do
       it 'returns single value in Array' do
         subject.parse('includes=author')[:includes].should eq ['author']
       end
-      
+
       it 'returns multiple values in Array' do
         subject.parse('includes=author,voter')[:includes].should eq ['author', 'voter']
       end
@@ -79,7 +79,7 @@ describe Muster::Strategies::ActiveRecord do
       it 'returns a nested hash of separated values' do
         subject.parse('includes=author.country.name')[:includes].should eq [{'author' => { 'country' => 'name'}}]
       end
-      
+
       it 'returns an array of nested hashes' do
         subject.parse('includes=author.country.name,activity.rule')[:includes].should eq [{'author' => { 'country' => 'name'}}, {'activity' => 'rule'}]
       end
@@ -137,6 +137,10 @@ describe Muster::Strategies::ActiveRecord do
     context 'wheres' do
       it 'returns a single value as a string in a hash' do
         subject.parse('where=id:1')[:where].should == {'id' => '1'}
+      end
+
+      it 'returns a single value as nil in a hash' do
+        subject.parse('where=id:null')[:where].should == {'id' => nil}
       end
 
       it 'returns values as an Array in a hash' do
