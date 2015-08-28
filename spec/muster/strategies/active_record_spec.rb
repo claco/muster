@@ -141,6 +141,11 @@ describe Muster::Strategies::ActiveRecord do
 
       it 'returns a single value as nil in a hash' do
         subject.parse('where=id:null')[:where].should == {'id' => nil}
+        subject.parse('where=id:NULL')[:where].should == {'id' => nil}
+        subject.parse('where=id:Null')[:where].should == {'id' => nil}
+        subject.parse('where=id:nil')[:where].should == {'id' => nil}
+        subject.parse('where=id:NIL')[:where].should == {'id' => nil}
+        subject.parse('where=id:Nil')[:where].should == {'id' => nil}
       end
 
       it 'returns values as an Array in a hash' do

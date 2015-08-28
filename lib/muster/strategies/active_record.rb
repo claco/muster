@@ -103,6 +103,8 @@ module Muster
 
       # Returns where clauses for AR queries
       #
+      # - In the case a NULL or NIL query string value is included (case insensitive), a `nil` object is substituted for the String value.
+      #
       # @param query_string [String] the original query string to parse where statements from
       #
       # @return [Hash]
@@ -110,13 +112,17 @@ module Muster
       # @example
       #
       #   value = self.parse_where('where=id:1')  #=> {'id' => '1'}
+      #   value = self.parse_where('where=id:null')  #=> {'id' => nil}
+      #   value = self.parse_where('where=id:nil')  #=> {'id' => nil}
       def parse_where( query_string )
         strategy = Muster::Strategies::FilterExpression.new(:field => :where)
         results  = strategy.parse(query_string)
 
-        if results[:where] && results[:where].values.include?('null')
+        nil_regex = /^(null|nil)$/i
+
+        if results[:where] && !results[:where].values.grep(nil_regex).empty?
           results[:where].each do |key, value|
-            results[:where][key] = nil if value == 'null'
+            results[:where][key] = nil if value.match(nil_regex)
           end
         end
 
