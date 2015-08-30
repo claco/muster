@@ -1,3 +1,7 @@
+= 0.0.10
+
+* Added support for 'IS NULL' queries in ActiveRecord Strategy (drydevelopment)
+
 = 0.0.9
 
 * Update .gitignore for .ruby-version/gemset files
