@@ -3,7 +3,6 @@ require 'muster/strategies/hash'
 
 module Muster
   module Strategies
-
     # Query string parsing strategy with additional value handling for sort orders
     #
     # @example
@@ -11,7 +10,6 @@ module Muster
     #   strategy = Muster::Strategies::SortExpression.new
     #   results  = strategy.parse('sort=name:desc')  #=>  { 'sort' => 'name desc' }
     class SortExpression < Muster::Strategies::Hash
-
       # Processes a query string and returns a hash of its fields/values
       #
       # @param query_string [String] the query string to parse
@@ -19,15 +17,15 @@ module Muster
       # @return [Hash]
       #
       # @example
-      #   
+      #
       #   results = strategy.parse('order=name')            #=>  { 'order' => 'name asc' }
       #   results = strategy.parse('order=name:desc')       #=>  { 'order' => 'name desc' }
       #   results = strategy.parse('order=name,date:desc')  #=>  { 'order' => ['name asc', 'date desc'] }
-      def parse( query_string )
-        parameters  = super
+      def parse(query_string)
+        parameters = super
 
         parameters.each do |key, value|
-          parameters[key] = self.parse_sort_expression(value)
+          parameters[key] = parse_sort_expression(value)
         end
       end
 
@@ -35,7 +33,7 @@ module Muster
 
       # Separates the values into their field and direction
       #
-      # @param value [String] the value being parsed
+      # @param expression [String] the value being parsed
       #
       # @return [String,Arrary] String if a single value, Array otherwise
       #
@@ -43,17 +41,17 @@ module Muster
       #
       #    value = self.parse_sort_expression('name:asc')  #=>  'name asc'
       #    value = self.parse_sort_expression(['name:asc', 'date'])  #=>  ['name asc', 'date asc']
-      def parse_sort_expression( value )
-        values = Array.wrap(value)
+      def parse_sort_expression(expression)
+        values = Array.wrap(expression)
 
         values = values.map do |value|
           name, direction = value.split(':', 2)
-          direction = self.parse_direction(direction)
+          direction = parse_direction(direction)
 
           "#{name} #{direction}"
         end.flatten
 
-        return (values.size > 1) ? values : values.first
+        (values.size > 1) ? values : values.first
       end
 
       # Parse and normalize the sot expression direction
@@ -66,10 +64,9 @@ module Muster
       #
       #   direction = self.parse_direction('ascending')   #=> 'asc'
       #   direction = self.parse_direction('descending')  #=> 'desc'
-      def parse_direction( direction )
+      def parse_direction(direction)
         direction.to_s.match(/^desc/i) ? 'desc' : 'asc'
       end
-
     end
   end
 end

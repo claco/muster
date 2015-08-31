@@ -5,15 +5,14 @@ describe Muster::Strategies::SortExpression do
   subject { Muster::Strategies::SortExpression.new(options) }
 
   describe '#parse' do
-
     context 'by default' do
       it 'returns empty hash for empty query string' do
-        subject.parse('').should == {}
+        subject.parse('').should eq({})
         subject.parse('').should be_an_instance_of(Muster::Results)
       end
 
       it 'returns hash of all key/value pairs' do
-        subject.parse('sort=id&order=name').should == { 'sort' => 'id asc', 'order' => 'name asc' }
+        subject.parse('sort=id&order=name').should eq('sort' => 'id asc', 'order' => 'name asc')
       end
 
       it 'hash supports indifferent key access' do
@@ -33,7 +32,7 @@ describe Muster::Strategies::SortExpression do
       it 'supports comma separated expressions without directions' do
         subject.parse('sort=id,name').should == { 'sort' => ['id asc', 'name asc'] }
       end
-      
+
       it 'discards non unique values' do
         subject.parse('sort=id&sort=name&sort=id').should == { 'sort' => ['id asc', 'name asc'] }
       end
@@ -90,6 +89,5 @@ describe Muster::Strategies::SortExpression do
         end
       end
     end
-
   end
 end

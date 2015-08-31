@@ -2,7 +2,6 @@ require 'muster/strategies/hash'
 
 module Muster
   module Strategies
-
     # Query string parsing strategy with additional value handling options for separating filtering expressions
     #
     # @example
@@ -10,7 +9,6 @@ module Muster
     #   strategy = Muster::Strategies::JoinsExpression.new
     #   results  = strategy.parse('joins=author.name,activity')  #=>  { 'joins' => [{'author' => 'name'}, 'activity'] }
     class JoinsExpression < Muster::Strategies::Hash
-
       # @attribute [r] expression_separator
       # @return [String,RegEx] when specified, each field value will be split into multiple expressions using the specified separator
       attr_reader :expression_separator
@@ -34,12 +32,12 @@ module Muster
       #
       #   strategy = Muster::Strategies::FilterExpression.new
       #   strategy = Muster::Strategies::FilterExpression.new(:unique_values => true)
-      def initialize( options={} )
+      def initialize(options = {})
         super
 
-        @expression_separator = self.options.fetch(:expression_separator, /,\s*/)
-        @field_separator      = self.options.fetch(:field_separator, '.')
-        @unique_values        = self.options.fetch(:unique_values, true)
+        @expression_separator = options.fetch(:expression_separator, /,\s*/)
+        @field_separator      = options.fetch(:field_separator, '.')
+        @unique_values        = options.fetch(:unique_values, true)
       end
 
       # Processes a query string and returns an array of hashes that represent an ActiveRecord joins expression
@@ -49,18 +47,19 @@ module Muster
       # @return [Muster::Results]
       #
       # @example
-      #   
+      #
       #   results = strategy.parse('joins=author.name,activity')  #=>  { 'joins' => [{'author' => 'name'}, 'activity'] }
-      def parse( query_string )
-        parameters = Muster::Results.new( self.fields_to_parse(query_string) )
+      def parse(query_string)
+        parameters = Muster::Results.new(fields_to_parse(query_string))
 
         parameters.each do |key, value|
-          value = value.uniq.first if self.unique_values == true && value.instance_of?(Array)
-          parameters[key] = self.make_nested_hash(value)
+          value = value.uniq.first if unique_values == true && value.instance_of?(Array)
+          parameters[key] = make_nested_hash(value)
         end
       end
 
       protected
+
       # Converts the array that represents the value to a nested hash
       #
       # @param value [Array] the value to convert
@@ -70,15 +69,13 @@ module Muster
       # @example
       #
       #   value = self.make_nested_hash('activity,author.country.name')  #=> ['activity', {'author' => {'country' => 'name'}}]
-      def make_nested_hash( value )
+      def make_nested_hash(value)
         expressions = value.split(expression_separator)
-        expressions.map do |e| 
-          fields = e.split(field_separator)
-          fields[0..-2].reverse.reduce(fields.last) { |a, n| { n => a } }
+        expressions.map do |expression|
+          fields = expression.split(field_separator)
+          fields[0..-2].reverse.reduce(fields.last) { |a, e| { e => a } }
         end
       end
-
     end
   end
 end
-

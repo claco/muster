@@ -1,0 +1,14 @@
+Metrics/LineLength:
+  Max: 150
+
+Style/HashSyntax:
+  Enabled: False
+
+Style/IfUnlessModifier:
+  Enabled: False
+
+Style/Lambda:
+  Enabled: False
+
+Style/WordArray:
+  MinSize: 3

@@ -9,7 +9,6 @@ require 'muster/strategies/joins_expression'
 
 module Muster
   module Strategies
-
     # Query string parsing strategy that outputs ActiveRecord Query compatible options
     #
     # @example
@@ -21,7 +20,6 @@ module Muster
     #   #
     #   # Person.select( results[:select] ).where( results[:where] ).order( results[:order] )
     class ActiveRecord < Muster::Strategies::Rack
-
       # Processes a query string and returns a hash of its fields/values
       #
       # @param query_string [String] the query string to parse
@@ -33,22 +31,22 @@ module Muster
       #   results  = strategy.parse('select=id,name&where=status:new&order=name:desc')
       #
       #   # { 'select' => ['id', 'name'], :where => {'status' => 'new}, :order => 'name desc' }
-      def parse( query_string )
-        pagination = self.parse_pagination( query_string )
+      def parse(query_string) # rubocop:disable Metrics/MethodLength
+        pagination = parse_pagination(query_string)
 
         parameters = Muster::Results.new(
-          :select   => self.parse_select(query_string),
-          :order    => self.parse_order(query_string),
+          :select   => parse_select(query_string),
+          :order    => parse_order(query_string),
           :limit    => pagination[:limit],
           :offset   => pagination[:offset],
-          :where    => self.parse_where(query_string),
-          :joins    => self.parse_joins(query_string),
-          :includes => self.parse_includes(query_string)
+          :where    => parse_where(query_string),
+          :joins    => parse_joins(query_string),
+          :includes => parse_includes(query_string)
         )
 
         parameters.regular_writer('pagination', pagination[:pagination].symbolize_keys)
 
-        return parameters
+        parameters
       end
 
       protected
@@ -61,12 +59,12 @@ module Muster
       #
       # @example
       #
-      #   value = self.parse_select('select=id,name')  #=> ['id', 'name']
-      def parse_select( query_string )
+      #   value = parse_select('select=id,name')  #=> ['id', 'name']
+      def parse_select(query_string)
         strategy = Muster::Strategies::Hash.new(:field => :select)
         results  = strategy.parse(query_string)
 
-        return Array.wrap( results[:select] )
+        Array.wrap(results[:select])
       end
 
       # Returns order by clauses for AR queries
@@ -77,12 +75,12 @@ module Muster
       #
       # @example
       #
-      #   value = self.parse_order('order=name:desc')  #=> ['name asc']
-      def parse_order( query_string )
+      #   value = parse_order('order=name:desc')  #=> ['name asc']
+      def parse_order(query_string)
         strategy = Muster::Strategies::SortExpression.new(:field => :order)
         results  = strategy.parse(query_string)
 
-        return Array.wrap( results[:order] )
+        Array.wrap(results[:order])
       end
 
       # Returns pagination information for AR queries
@@ -93,12 +91,10 @@ module Muster
       #
       # @example
       #
-      #   value = self.parse_pagination('page=2&page_size=10')  #=> { 'pagination' => {:page => 2, :per_page => 10}, 'limit' => 10, 'offset' => 10 }
-      def parse_pagination( query_string )
+      #   value = parse_pagination('page=2&page_size=10')  #=> { 'pagination' => {:page => 2, :per_page => 10}, 'limit' => 10, 'offset' => 10 }
+      def parse_pagination(query_string)
         strategy = Muster::Strategies::Pagination.new(:fields => [:pagination, :limit, :offset])
-        results  = strategy.parse(query_string)
-
-        return results
+        strategy.parse(query_string)
       end
 
       # Returns where clauses for AR queries
@@ -111,10 +107,10 @@ module Muster
       #
       # @example
       #
-      #   value = self.parse_where('where=id:1')  #=> {'id' => '1'}
-      #   value = self.parse_where('where=id:null')  #=> {'id' => nil}
-      #   value = self.parse_where('where=id:nil')  #=> {'id' => nil}
-      def parse_where( query_string )
+      #   value = parse_where('where=id:1')  #=> {'id' => '1'}
+      #   value = parse_where('where=id:null')  #=> {'id' => nil}
+      #   value = parse_where('where=id:nil')  #=> {'id' => nil}
+      def parse_where(query_string)
         strategy = Muster::Strategies::FilterExpression.new(:field => :where)
         results  = strategy.parse(query_string)
 
@@ -126,7 +122,7 @@ module Muster
           end
         end
 
-        return results[:where] || {}
+        results[:where] || {}
       end
 
       # Returns joins clauses for AR queries
@@ -137,12 +133,12 @@ module Muster
       #
       # @example
       #
-      #   value = self.parse_joins('joins=authors')  #=> {'joins' => 'authors'}
-      def parse_joins( query_string )
+      #   value = parse_joins('joins=authors')  #=> {'joins' => 'authors'}
+      def parse_joins(query_string)
         strategy = Muster::Strategies::JoinsExpression.new(:field => :joins)
         results  = strategy.parse(query_string)
 
-        return results[:joins] || {}
+        results[:joins] || {}
       end
 
       # Returns includes clauses for AR queries
@@ -153,14 +149,13 @@ module Muster
       #
       # @example
       #
-      #   value = self.parse_joins('includes=authors')  #=> {'includes' => 'authors'}
-      def parse_includes( query_string )
+      #   value = parse_joins('includes=authors')  #=> {'includes' => 'authors'}
+      def parse_includes(query_string)
         strategy = Muster::Strategies::JoinsExpression.new(:field => :includes)
         results  = strategy.parse(query_string)
 
-        return results[:includes] || {}
+        results[:includes] || {}
       end
-
     end
   end
 end

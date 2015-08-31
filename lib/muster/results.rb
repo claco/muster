@@ -3,7 +3,6 @@ require 'active_support/core_ext/object/blank'
 require 'active_support/hash_with_indifferent_access'
 
 module Muster
-
   # Query parsed results helper class
   #
   # As with most Muster classes, all hashes returned and options specified support with indifferent access.
@@ -32,7 +31,6 @@ module Muster
   #   results.filtered[:select]                        #=> [:id, :name]
   #   results.filtered.select                          #=> [:id, :name]
   class Results < ActiveSupport::HashWithIndifferentAccess
-
     # @attribute [r] data
     # @return [Hash] raw data specified during initialization
     attr_reader :data
@@ -51,7 +49,7 @@ module Muster
     #
     #   data = { :select => [:id, :name, :created_at] }
     #   results = Muster::Results.new(data)
-    def initialize( data, options={} )
+    def initialize(data, options = {}) # rubocop:disable Lint/UnusedMethodArgument
       super(data)
 
       @data = data
@@ -83,8 +81,8 @@ module Muster
     #   results.add_filter(:select, :only => [:id, :name])
     #   results.add_filter(:select, :except => [:id])
     #   results.add_filter(:page, 1)
-    def add_filter( key, *options )
-      self.filters[key] = options
+    def add_filter(key, *options)
+      filters[key] = options
     end
 
     # Returns the raw data with all of the filters applied
@@ -99,15 +97,13 @@ module Muster
     #   results.add_dilter(:page, 1)
     #   results.filtered   #=> { 'select' => [:id, :name], 'page' => 1 }
     def filtered
-      return self if self.filters.empty?
+      return self if filters.empty?
 
-      filtered_results = self.filters.inject( {} ) do |results, (key, options)|
-        results[key] = self.filter( key, *options )
-
-        results
+      filtered_results = filters.each_with_object({}) do |(key, options), results|
+        results[key] = filter(key, *options)
       end
 
-      return self.class.new(filtered_results)
+      self.class.new(filtered_results)
     end
 
     # Filters and returns the raw data values for the specifid key and options
@@ -139,31 +135,32 @@ module Muster
     #   results.filter(:select, :only => [:other, :name])  #=> [:name]
     #   results.filter(:other, :default)                   #=> :default
     #   results.filter(:other)                             #=> KeyError
-    def filter( key, *options )
+    def filter(key, *options)
       if options.present? && options.first.instance_of?(Hash)
         options = options.first.with_indifferent_access
 
-        if options.has_key?(:only)
-          return filter_only_values( key, options[:only] )
-        elsif options.has_key?(:except)
-          return filter_excluded_values( key, options[:except] )
+        if options.key?(:only)
+          return filter_only_values(key, options[:only])
+        elsif options.key?(:except)
+          return filter_excluded_values(key, options[:except])
         end
       else
-        return self.fetch(key, *options)
+        return fetch(key, *options)
       end
     end
 
     private
 
+    # rubocop:disable Lint/NestedMethodDefinition, Metrics/MethodLength
     def method_missing(meth, *args, &block)
-      if self.has_key?(meth)
+      if key?(meth)
         value = self[meth]
 
-        if value.kind_of?(Hash)
+        if value.is_a?(Hash)
           value.instance_eval do
             def method_missing(meth, *args, &block)
-              if self.has_key?(meth)
-                return self.fetch(meth)
+              if key?(meth)
+                return fetch(meth)
               end
 
               super
@@ -173,11 +170,12 @@ module Muster
 
         return value
       end
+      # rubocop:enable
 
       super
     end
 
-    def filter_excluded_values( key, excluded )
+    def filter_excluded_values(key, excluded)
       value = self[key]
       excluded = Array.wrap(excluded)
 
@@ -190,8 +188,8 @@ module Muster
       end
     end
 
-    def filter_only_values( key, allowed )
-      values = Array.wrap( self[key] )
+    def filter_only_values(key, allowed)
+      values = Array.wrap(self[key])
 
       if allowed.instance_of?(Array)
         return values & allowed
@@ -199,6 +197,5 @@ module Muster
         return allowed
       end
     end
-
   end
 end

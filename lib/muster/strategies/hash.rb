@@ -4,7 +4,6 @@ require 'muster/strategies/rack'
 
 module Muster
   module Strategies
-
     # Query string parsing strategy with additional value handling options for separating values and uniqueness
     #
     # @example
@@ -12,7 +11,6 @@ module Muster
     #   strategy = Muster::Strategies::Hash.new(:unique_values => true, :value_separator => ',')
     #   results  = strategy.parse('name=value&choices=1,2,1')  #=>  { 'name' => 'value', 'choices' => ['1', '2'] }
     class Hash < Muster::Strategies::Rack
-
       # @attribute [r] value_separator
       # @return [String,RegEx] when specified, each field value will be split into multiple values using the specified separator
       attr_reader :value_separator
@@ -34,7 +32,7 @@ module Muster
       #
       #   strategy = Muster::Strategies::Hash.new(:fields => [:name, :state], :value_separator => '|')
       #   strategy = Muster::Strategies::Hash.new(:unique_values => false)
-      def initialize( options={} )
+      def initialize(options = {})
         super
 
         @unique_values   = self.options.fetch(:unique_values, true)
@@ -48,29 +46,29 @@ module Muster
       # @return [Muster::Results]
       #
       # @example
-      #   
+      #
       #   results = strategy.parse('name=value&choices=1,2')  #=>  { 'name' => 'value', 'choices' => ['1', '2'] }
-      def parse( query_string )
+      def parse(query_string)
         parameters = super
 
         parameters.each do |key, value|
-          if self.value_separator.present?
-            parameters[key] = self.separate_values(value)
+          if value_separator.present?
+            parameters[key] = separate_values(value)
           end
 
-          if self.unique_values == true && value.instance_of?(Array)
+          if unique_values == true && value.instance_of?(Array)
             parameters[key].uniq!
           end
         end
 
-        return parameters
+        parameters
       end
 
       protected
 
       # Separates values into an Array of values using :values_separator
       #
-      # @param value [String,Array] the original query string field value to separate
+      # @param values_string [String,Array] the original query string field value to separate
       #
       # @return [String,Array] String if a single value exists, Array otherwise
       #
@@ -78,16 +76,15 @@ module Muster
       #
       #   value = self.separate_values('1')    #=> '1'
       #   value = self.separate_values('1,2')  #=>  ['1', '2']
-      def separate_values( value )
-        values = Array.wrap(value)
+      def separate_values(values_string)
+        values = Array.wrap(values_string)
 
         values = values.map do |value|
-          value.split(self.value_separator)
+          value.split(value_separator)
         end.flatten
 
-        return (values.size > 1) ? values : value
+        (values.size > 1) ? values : values_string
       end
-
     end
   end
 end

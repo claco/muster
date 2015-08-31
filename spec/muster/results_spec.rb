@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Muster::Results do
-  let(:data)        { {:name => [1, 2, 3]} }
+  let(:data)        { { :name => [1, 2, 3] } }
   let(:options)     { {} }
   subject(:results) { Muster::Results.new(data, options) }
 
@@ -10,7 +10,7 @@ describe Muster::Results do
   describe '#filter' do
     context 'without options hash' do
       it 'returns the same as fetch' do
-        results.filter(:name).should eq [1,2,3]
+        results.filter(:name).should eq [1, 2, 3]
       end
 
       it 'supports a default value' do
@@ -18,21 +18,21 @@ describe Muster::Results do
       end
 
       it 'throws exception without default' do
-        expect{ results.filter(:bogons) }.to raise_error(KeyError)
+        expect { results.filter(:bogons) }.to raise_error(KeyError)
       end
     end
 
     context 'with options hash' do
       context 'with :except option' do
         context 'with data value as Array' do
-          before { data[:name] = [1,2,3] }
+          before { data[:name] = [1, 2, 3] }
 
           it 'returns values not listed in :except as array' do
-            results.filter(:name, :except => [2]).should eq [1,3]
+            results.filter(:name, :except => [2]).should eq [1, 3]
           end
 
           it 'returns values not listed in :except as scalar' do
-            results.filter(:name, :except => 2).should eq [1,3]
+            results.filter(:name, :except => 2).should eq [1, 3]
           end
         end
 
@@ -55,7 +55,7 @@ describe Muster::Results do
         end
 
         it 'returns values listed in :only as array' do
-          results.filter(:name, :only => [1,3]).should eq [1,3]
+          results.filter(:name, :only => [1, 3]).should eq [1, 3]
         end
       end
     end
@@ -80,7 +80,7 @@ describe Muster::Results do
 
         filtered_results = results.filtered
         filtered_results.should be_an_instance_of(Muster::Results)
-        filtered_results.should == {"name"=>[2, 3], "page"=>1, "order"=>[], "where"=>nil}
+        filtered_results.should eq('name' => [2, 3], 'page' => 1, 'order' => [], 'where' => nil)
       end
     end
   end
@@ -93,7 +93,7 @@ describe Muster::Results do
       end
 
       it 'returns a Hash with method missing dot notation' do
-        data[:pagination] = {:page => 1, :per_page => 10}
+        data[:pagination] = { :page => 1, :per_page => 10 }
 
         results.pagination.should be_an_kind_of(Hash)
         results.pagination.page.should eq 1
@@ -105,7 +105,7 @@ describe Muster::Results do
 
     context 'without matching key' do
       it 'returns NoMethodError' do
-        expect{ results.foop }.to raise_error(NoMethodError)
+        expect { results.foop }.to raise_error(NoMethodError)
       end
     end
 

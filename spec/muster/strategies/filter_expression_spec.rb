@@ -5,15 +5,14 @@ describe Muster::Strategies::FilterExpression do
   subject { Muster::Strategies::FilterExpression.new(options) }
 
   describe '#parse' do
-
     context 'by default' do
       it 'returns empty hash for empty query string' do
-        subject.parse('').should == {}
+        subject.parse('').should eq({})
         subject.parse('').should be_an_instance_of(Muster::Results)
       end
 
       it 'returns hash of all key/value pairs' do
-        subject.parse('where=id:1&filter=name:foop').should == { 'where' => {'id' => '1'}, 'filter' => {'name' => 'foop'} }
+        subject.parse('where=id:1&filter=name:foop').should eq('where' => { 'id' => '1' }, 'filter' => { 'name' => 'foop' })
       end
 
       it 'hash supports indifferent key access' do
@@ -23,19 +22,19 @@ describe Muster::Strategies::FilterExpression do
       end
 
       it 'combines multiple expressions into an array' do
-        subject.parse('where=id:1&where=id:2').should == { 'where' => {'id' => ['1', '2']} }
+        subject.parse('where=id:1&where=id:2').should eq('where' => { 'id' => ['1', '2'] })
       end
 
       it 'support for multiple values using |' do
-        subject.parse('where=id:1|2&where=id:3').should == { 'where' => {'id' => ['1', '2', '3']} }
+        subject.parse('where=id:1|2&where=id:3').should eq('where' => { 'id' => ['1', '2', '3'] })
       end
 
       it 'support for multiple expressions using ,' do
-        subject.parse('where=id:1,id:2,id:3').should == { 'where' => {'id' => ['1', '2', '3']} }
+        subject.parse('where=id:1,id:2,id:3').should eq('where' => { 'id' => ['1', '2', '3'] })
       end
 
       it 'discards non unique values' do
-        subject.parse('where=id:1&where=id:2&where=id:1').should == { 'where' => {'id' => ['1', '2']} }
+        subject.parse('where=id:1&where=id:2&where=id:1').should eq('where' => { 'id' => ['1', '2'] })
       end
     end
 
@@ -47,11 +46,11 @@ describe Muster::Strategies::FilterExpression do
         end
 
         it 'converts comma separated value into Array' do
-          subject.parse('where=id:1,2').should == { 'where' => {'id' => ['1', '2']} }
+          subject.parse('where=id:1,2').should eq('where' => { 'id' => ['1', '2'] })
         end
 
         it 'ignores spaces after commas' do
-          subject.parse('where=id:1,+2,%20   3').should == { 'where' => {'id' => ['1', '2', '3']} }
+          subject.parse('where=id:1,+2,%20   3').should eq('where' => { 'id' => ['1', '2', '3'] })
         end
       end
 
@@ -62,7 +61,7 @@ describe Muster::Strategies::FilterExpression do
         end
 
         it 'converts comma separated value into Array' do
-          subject.parse('where=id:1,2,3').should == { 'where' => {'id' => ['1', '2', '3']} }
+          subject.parse('where=id:1,2,3').should eq('where' => { 'id' => ['1', '2', '3'] })
         end
       end
     end
@@ -72,11 +71,11 @@ describe Muster::Strategies::FilterExpression do
         before { options[:field_separator] = /\s*!\s*/ }
 
         it 'splits field from values' do
-          subject.parse('where=id!1').should == { 'where' => {'id' => '1'} }
+          subject.parse('where=id!1').should eq('where' => { 'id' => '1' })
         end
 
         it 'ignores spaces after field' do
-          subject.parse('where=id ! 1').should == { 'where' => {'id' => '1'} }
+          subject.parse('where=id ! 1').should eq('where' => { 'id' => '1' })
         end
       end
 
@@ -84,7 +83,7 @@ describe Muster::Strategies::FilterExpression do
         before { options[:field_separator] = '!' }
 
         it 'converts comma separated value into Array' do
-          subject.parse('where=id!1').should == { 'where' => {'id' => '1'} }
+          subject.parse('where=id!1').should eq('where' => { 'id' => '1' })
         end
       end
     end
@@ -94,7 +93,7 @@ describe Muster::Strategies::FilterExpression do
         before { options[:field] = :where }
 
         it 'fields returns expressions for the key specified' do
-          subject.parse('where=id:1&filters=id:2').should == { 'where' => {'id' => '1'} }
+          subject.parse('where=id:1&filters=id:2').should eq('where' => { 'id' => '1' })
         end
       end
 
@@ -102,7 +101,7 @@ describe Muster::Strategies::FilterExpression do
         before { options[:fields] = [:where, :filter] }
 
         it 'fields returns expressions for the keys specified' do
-          subject.parse('where=id:1&filter=id:2&attribute=id:3').should == { 'where' => {'id' => '1'}, 'filter' => {'id' => '2'} }
+          subject.parse('where=id:1&filter=id:2&attribute=id:3').should eq('where' => { 'id' => '1' }, 'filter' => { 'id' => '2' })
         end
       end
 
@@ -110,7 +109,7 @@ describe Muster::Strategies::FilterExpression do
         before { options[:field] = 'where' }
 
         it 'fields returns expressions for the key specified' do
-          subject.parse('where=id:1&filter=id:2').should == { 'where' => {'id' => '1'} }
+          subject.parse('where=id:1&filter=id:2').should eq('where' => { 'id' => '1' })
         end
       end
 
@@ -118,10 +117,9 @@ describe Muster::Strategies::FilterExpression do
         before { options[:fields] = ['where', 'filter'] }
 
         it 'fields returns expressions for the keys specified' do
-          subject.parse('where=id:1&filter=id:2&attribute=id:3').should == { 'where' => {'id' => '1'}, 'filter' => {'id' => '2'} }
+          subject.parse('where=id:1&filter=id:2&attribute=id:3').should eq('where' => { 'id' => '1' }, 'filter' => { 'id' => '2' })
         end
       end
     end
-
   end
 end
