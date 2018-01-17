@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 require File.expand_path('../lib/muster/version', __FILE__)
 
 # rubocop:disable Metrics/LineLength
@@ -20,9 +19,11 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'rack', '~> 2.0'
 
   gem.add_development_dependency 'pry'
-  gem.add_development_dependency 'rspec', '~> 2.11.0'
+  gem.add_development_dependency 'rake', '~> 12.3.0'
   gem.add_development_dependency 'redcarpet', '~> 2.1'
-  gem.add_development_dependency 'rubocop', '~> 0.33.0'
+  gem.add_development_dependency 'rspec', '~> 3.7.0'
+  gem.add_development_dependency 'rspec-its', '~> 1.2'
+  gem.add_development_dependency 'rubocop', '~> 0.52.0'
   gem.add_development_dependency 'simplecov'
-  gem.add_development_dependency 'yard', '~> 0.8.2'
+  gem.add_development_dependency 'yard', '~> 0.9.0'
 end

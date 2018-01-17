@@ -12,3 +12,48 @@ Style/Lambda:
 
 Style/WordArray:
   MinSize: 3
+
+Style/SymbolArray:
+  Enabled: False
+
+Style/FrozenStringLiteralComment:
+  Enabled: False
+
+Style/GuardClause:
+  Enabled: False
+
+Style/MethodMissing:
+  Enabled: False
+
+Lint/UnneededDisable:
+  Enabled: False
+
+Lint/MissingCopEnableDirective:
+  Enabled: False
+
+Style/RedundantReturn:
+  Enabled: False
+
+Style/MutableConstant:
+  Enabled: False
+
+Style/TernaryParentheses:
+  Enabled: False
+
+Performance/RedundantMatch:
+  Enabled: False
+
+Style/NumericPredicate:
+  Enabled: False
+
+Style/WordArray:
+  Enabled: False
+
+Metrics/BlockLength:
+  Enabled: False
+
+Layout/EmptyLineAfterMagicComment:
+  Enabled: False
+
+Lint/ScriptPermission:
+  Enabled: False
