@@ -1,3 +1,7 @@
+= 0.0.12
+
+* Update rack dependency to ~> 2.0 to support rails 5 (jonstetler) 
+
 = 0.0.11
 
 * Massive rubocop cleanup
